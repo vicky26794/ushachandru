@@ -1,0 +1,1 @@
+Add MP3 files with these exact names: tamil-birthday-1.mp3, tamil-birthday-2.mp3, favourite-melody.mp3. Use audio files you own or are licensed to use. The starter project does not include copyrighted songs.

@@ -27,14 +27,17 @@ npm run preview
 ```
 
 ### GitHub Pages
-This project deploys automatically to:
-`https://vicky26794.github.io/ushachandru/`
+Live site: `https://vicky26794.github.io/ushachandru/`
 
-1. Push to `main`
-2. In the repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**
-3. The workflow `.github/workflows/deploy-pages.yml` builds and publishes `dist/`
+**One-time setup (required):**
+1. Open https://github.com/vicky26794/ushachandru/settings/pages
+2. Under **Build and deployment**, set either:
+   - **Source: Deploy from a branch** → Branch **`gh-pages`** / **`/(root)`**, or
+   - **Source: Deploy from a branch** → Branch **`main`** / **`/docs`**, or
+   - **Source: GitHub Actions**
+3. Save, wait 1–2 minutes, then hard-refresh the site
 
-Vite `base` is set to `/ushachandru/` for this project site.
+Every push to `main` runs `.github/workflows/deploy-pages.yml` (builds Vite with `base: /ushachandru/` and publishes).
 
 ## Add photos
 Put your images in `public/images/` and name them:
