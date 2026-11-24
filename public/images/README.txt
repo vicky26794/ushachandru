@@ -1,0 +1,1 @@
+Replace photo-1.jpg, photo-2.jpg and photo-3.jpg with Usha's photos. Keep these exact filenames. If a photo is missing, the placeholder graphic is shown.
