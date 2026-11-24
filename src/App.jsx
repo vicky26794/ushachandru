@@ -18,21 +18,23 @@ import {
   X,
 } from "lucide-react";
 
+const base = import.meta.env.BASE_URL;
+
 const photos = [
-  { src: "/images/photo-1.jpg", caption: "Your brightest smile" },
-  { src: "/images/photo-2.jpg", caption: "A day to celebrate" },
-  { src: "/images/photo-3.jpg", caption: "Blooming with joy" },
-  { src: "/images/photo-4.jpg", caption: "Grace in every moment" },
-  { src: "/images/photo-5.jpg", caption: "Always shining" },
-  { src: "/images/photo-6.jpg", caption: "Warmth and love" },
-  { src: "/images/photo-7.jpg", caption: "Festive memories" },
-  { src: "/images/photo-8.jpg", caption: "Keep sparkling, Usha" },
+  { src: `${base}images/photo-1.jpg`, caption: "Your brightest smile" },
+  { src: `${base}images/photo-2.jpg`, caption: "A day to celebrate" },
+  { src: `${base}images/photo-3.jpg`, caption: "Blooming with joy" },
+  { src: `${base}images/photo-4.jpg`, caption: "Grace in every moment" },
+  { src: `${base}images/photo-5.jpg`, caption: "Always shining" },
+  { src: `${base}images/photo-6.jpg`, caption: "Warmth and love" },
+  { src: `${base}images/photo-7.jpg`, caption: "Festive memories" },
+  { src: `${base}images/photo-8.jpg`, caption: "Keep sparkling, Usha" },
 ];
 
 const tracks = [
-  { title: "Tamil Birthday Song 1", file: "/music/tamil-birthday-1.wav" },
-  { title: "Tamil Birthday Song 2", file: "/music/tamil-birthday-2.wav" },
-  { title: "Your Favourite Melody", file: "/music/favourite-melody.wav" },
+  { title: "Tamil Birthday Song 1", file: `${base}music/tamil-birthday-1.wav` },
+  { title: "Tamil Birthday Song 2", file: `${base}music/tamil-birthday-2.wav` },
+  { title: "Your Favourite Melody", file: `${base}music/favourite-melody.wav` },
 ];
 
 const navItems = [
@@ -331,7 +333,7 @@ function App() {
                 src={currentPhoto.src}
                 alt={currentPhoto.caption}
                 onError={(event) => {
-                  event.currentTarget.src = "/images/photo-placeholder.svg";
+                  event.currentTarget.src = `${base}images/photo-placeholder.svg`;
                 }}
               />
               <p>{currentPhoto.caption}</p>

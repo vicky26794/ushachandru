@@ -25,7 +25,16 @@ Open the local URL printed by Vite (usually http://localhost:5173).
 npm run build
 npm run preview
 ```
-Upload the contents of `dist/` to your web hosting document root.
+
+### GitHub Pages
+This project deploys automatically to:
+`https://vicky26794.github.io/ushachandru/`
+
+1. Push to `main`
+2. In the repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**
+3. The workflow `.github/workflows/deploy-pages.yml` builds and publishes `dist/`
+
+Vite `base` is set to `/ushachandru/` for this project site.
 
 ## Add photos
 Put your images in `public/images/` and name them:
