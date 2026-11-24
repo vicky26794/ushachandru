@@ -129,9 +129,10 @@ function App() {
   const [letterOpen, setLetterOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [needsGesture, setNeedsGesture] = useState(false);
+  const [needsGesture, setNeedsGesture] = useState(true);
   const audioRef = useRef(null);
   const sliderPausedRef = useRef(false);
+  const unlockedRef = useRef(false);
 
   const currentTrack = tracks[trackIndex];
   const currentPhoto = photos[photoIndex];
@@ -140,7 +141,10 @@ function App() {
     const audio = audioRef.current;
     if (!audio) return false;
     try {
+      audio.muted = false;
+      audio.volume = isMuted ? 0 : volume;
       await audio.play();
+      unlockedRef.current = true;
       setIsPlaying(true);
       setNeedsGesture(false);
       return true;
@@ -157,26 +161,52 @@ function App() {
     audio.volume = isMuted ? 0 : volume;
   }, [isMuted, volume]);
 
+  // Autoplay birthday songs as soon as the browser allows it
   useEffect(() => {
     let cancelled = false;
+    const audio = audioRef.current;
+
     const boot = async () => {
-      await new Promise((r) => setTimeout(r, 400));
-      if (cancelled) return;
+      if (!audio || cancelled) return;
+      // Try unmuted autoplay first
       const ok = await tryPlay();
-      if (!ok && !cancelled) setNeedsGesture(true);
+      if (ok || cancelled) return;
+
+      // Fallback: muted autoplay (allowed by most browsers), unmute on first tap
+      try {
+        audio.muted = true;
+        await audio.play();
+        if (!cancelled) {
+          setIsPlaying(true);
+          setNeedsGesture(true);
+        }
+      } catch {
+        if (!cancelled) setNeedsGesture(true);
+      }
     };
-    boot();
+
     const unlock = () => {
+      if (unlockedRef.current) return;
+      const el = audioRef.current;
+      if (el) el.muted = false;
       tryPlay();
-      window.removeEventListener("pointerdown", unlock);
-      window.removeEventListener("keydown", unlock);
     };
-    window.addEventListener("pointerdown", unlock, { once: true });
-    window.addEventListener("keydown", unlock, { once: true });
+
+    const onReady = () => { boot(); };
+    if (audio) {
+      if (audio.readyState >= 2) boot();
+      else audio.addEventListener("canplay", onReady, { once: true });
+    } else {
+      boot();
+    }
+
+    const events = ["pointerdown", "touchstart", "keydown", "click", "scroll"];
+    events.forEach((eventName) => window.addEventListener(eventName, unlock, { once: true, passive: true }));
+
     return () => {
       cancelled = true;
-      window.removeEventListener("pointerdown", unlock);
-      window.removeEventListener("keydown", unlock);
+      if (audio) audio.removeEventListener("canplay", onReady);
+      events.forEach((eventName) => window.removeEventListener(eventName, unlock));
     };
   }, []);
 
@@ -260,9 +290,14 @@ function App() {
         ref={audioRef}
         src={currentTrack.file}
         preload="auto"
+        autoPlay
+        playsInline
         loop={repeat}
         onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
         onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
+        onCanPlay={() => {
+          if (!unlockedRef.current && !isPlaying) tryPlay();
+        }}
         onEnded={() => {
           if (repeat && tracks.length === 1) return;
           changeTrack(1);
@@ -270,8 +305,14 @@ function App() {
       />
 
       {needsGesture && (
-        <button className="gesture-unlock" onClick={() => tryPlay()} type="button">
-          <Music2 size={18} /> Tap to start celebration music
+        <button
+          className="gesture-unlock gesture-unlock-full"
+          onClick={() => tryPlay()}
+          type="button"
+        >
+          <Music2 size={22} />
+          <span>Tap to play birthday songs</span>
+          <small>Music starts automatically after one tap</small>
         </button>
       )}
 
